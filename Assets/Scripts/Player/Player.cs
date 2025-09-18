@@ -12,6 +12,7 @@ public class Player : MonoBehaviour{
     private float strafeSpeed = 5f;
 
     private bool strafingRight = false;
+
     private bool strafingLeft = false;
 
     private bool isJumping = false;
@@ -20,13 +21,10 @@ public class Player : MonoBehaviour{
 
     public event Action OnIdle;
     public event Action OnRun;
-    public event Action OnStrafeLeft;
-    public event Action OnStrafeRight;
     public event Action OnJump;
     public event Action OnLand;
     public event Action OnCrouch;
 
-    public event Action OnHitSide;
     public event Action OnLose;
 
     private void Awake(){
@@ -52,9 +50,13 @@ public class Player : MonoBehaviour{
         GameInput.Instance.OnMoveCancel -= MoveCancel;
     }
 
-    private void SetGroundedState(bool state){
-        isGrounded = state;
-        Debug.Log($"Player: Grounded: {state}");
+    private void SetGroundedState(bool newState){
+        if(isGrounded != newState){
+            isGrounded = newState;
+            if(newState){
+                OnLand?.Invoke();
+            }
+        }
     }
 
     private void MoveStart(MoveDirection direction){
@@ -104,6 +106,7 @@ public class Player : MonoBehaviour{
         }
         if(isJumping && isGrounded){
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+            OnJump?.Invoke();
         }
     }
 
