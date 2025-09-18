@@ -5,7 +5,7 @@ public class PlayerVisual : MonoBehaviour{
     private const string DEATH_TRIGGER = "DeathTrigger";
     private const string RUN_TRIGGER = "RunTrigger";
     private const string CROUCH_TRIGGER = "CrouchTrigger";
-    private const string IS_IDLE = "IsIdle";
+    private const string IDLE_TRIGGER = "IdleTrigger";
 
     private const string JUMP_ANIMATION = "Jump";
     private const string LAND_ANIMATION = "Landing";
@@ -40,15 +40,17 @@ public class PlayerVisual : MonoBehaviour{
         animator.SetTrigger(DEATH_TRIGGER);
     }
     private void PlayCrouch(){
+        animator.ResetTrigger(RUN_TRIGGER);
         animator.SetTrigger(CROUCH_TRIGGER);
     }
     private void PlayRun(){
-        animator.SetBool(IS_IDLE, false);
+        animator.ResetTrigger(IDLE_TRIGGER);
         animator.SetTrigger(RUN_TRIGGER);
     }
 
     private void PlayIdle(){
-        animator.SetBool(IS_IDLE, true);
+        animator.ResetTrigger(RUN_TRIGGER);
+        animator.SetTrigger(IDLE_TRIGGER);
     }
 
     private void PlayJump(){

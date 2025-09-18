@@ -9,6 +9,8 @@ public class Player : MonoBehaviour{
     private Rigidbody rb;
     private float jumpForce = 8f;
 
+    private float crouchDuration = 0.5f;
+
     private float strafeSpeed = 5f;
 
     private bool strafingRight = false;
@@ -32,6 +34,8 @@ public class Player : MonoBehaviour{
             }
         }
     }
+
+    private Coroutine currentCrouchRoutine;
 
     private float crouchGravityBoost = 1f;
 
@@ -93,8 +97,7 @@ public class Player : MonoBehaviour{
                 isJumping = true;
                 break;
             case MoveDirection.Down:
-                IsCrouching = true;
-                OnCrouch?.Invoke();
+                currentCrouchRoutine = StartCoroutine(CrouchRoutine());
                 break;
         }
 
@@ -114,10 +117,14 @@ public class Player : MonoBehaviour{
             case MoveDirection.Up:
                 isJumping = false;
                 break;
-            case MoveDirection.Down:
-                IsCrouching = false;
-                break;
         }
+    }
+
+    private IEnumerator CrouchRoutine(){
+        IsCrouching = true;
+        yield return new WaitForSeconds(crouchDuration);
+        IsCrouching = false;
+        currentCrouchRoutine = null;
     }
 
     private void Update(){
