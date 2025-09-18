@@ -16,6 +16,24 @@ public class Player : MonoBehaviour{
     private bool strafingLeft = false;
 
     private bool isJumping = false;
+    private bool isCrouching = false;
+    private bool IsCrouching{
+        get => isCrouching;
+        set{
+            if(isCrouching != value){
+                isCrouching = value;
+ 
+                if(isCrouching){
+                    OnCrouch?.Invoke();
+                }
+                else{
+                    OnRun?.Invoke();
+                }
+            }
+        }
+    }
+
+    private float crouchGravityBoost = 1f;
 
     private bool isGrounded;
 
@@ -75,6 +93,8 @@ public class Player : MonoBehaviour{
                 isJumping = true;
                 break;
             case MoveDirection.Down:
+                IsCrouching = true;
+                OnCrouch?.Invoke();
                 break;
         }
 
@@ -93,6 +113,9 @@ public class Player : MonoBehaviour{
                 break;
             case MoveDirection.Up:
                 isJumping = false;
+                break;
+            case MoveDirection.Down:
+                IsCrouching = false;
                 break;
         }
     }
