@@ -6,15 +6,16 @@ public class Player : MonoBehaviour{
 
     [SerializeField] private PlayerGroundedZone groundedZone;
 
+    [SerializeField] private float jumpForce = 8f;
+    private float runningSpeed = 10f;
+
+    [SerializeField] private float crouchDuration = 0.5f;
+
+    [SerializeField] private float strafeSpeed = 5f;
+
     private Rigidbody rb;
-    private float jumpForce = 8f;
-
-    private float crouchDuration = 0.5f;
-
-    private float strafeSpeed = 5f;
-
+    
     private bool strafingRight = false;
-
     private bool strafingLeft = false;
 
     private bool isJumping = false;
@@ -138,6 +139,9 @@ public class Player : MonoBehaviour{
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
             OnJump?.Invoke();
         }
+
+        transform.position += new Vector3(0,0, runningSpeed * Time.deltaTime);
+
     }
 
 }
