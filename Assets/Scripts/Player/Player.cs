@@ -23,7 +23,6 @@ public class Player : MonoBehaviour{
     private bool strafingRight = false;
     private bool strafingLeft = false;
 
-    private bool isJumping = false;
     private bool isCrouching = false;
     private bool IsCrouching{
         get => isCrouching;
@@ -133,7 +132,7 @@ public class Player : MonoBehaviour{
                 strafingRight = true;
                 break;
             case MoveDirection.Up:
-                isJumping = true;
+                DoJump();
                 break;
             case MoveDirection.Down:
                 currentCrouchRoutine = StartCoroutine(CrouchRoutine());
@@ -157,9 +156,21 @@ public class Player : MonoBehaviour{
                 strafingRight = false;
                 rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, rb.linearVelocity.z);
                 break;
-            case MoveDirection.Up:
-                isJumping = false;
-                break;
+        }
+    }
+
+    private void DoJump(){
+        if(isMoving && isGrounded){
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
+            if(IsCrouching){
+                IsCrouching = false;
+                if(currentCrouchRoutine != null){
+                    StopCoroutine(currentCrouchRoutine);
+                }
+                currentCrouchRoutine = null;
+
+            }
+            OnJump?.Invoke();
         }
     }
 
@@ -186,21 +197,7 @@ public class Player : MonoBehaviour{
             newLinearVelocity = new Vector3(strafeSpeed, newLinearVelocity.y, newLinearVelocity.z);
         }
 
-        if(isGrounded){
-            if(isJumping){
-                newLinearVelocity = new Vector3(newLinearVelocity.x, jumpForce, newLinearVelocity.z);
-                if(IsCrouching){
-                    IsCrouching = false;
-                    if(currentCrouchRoutine != null){
-                        StopCoroutine(currentCrouchRoutine);
-                    }
-                    currentCrouchRoutine = null;
-
-                }
-                OnJump?.Invoke();
-            }
-        }
-        else{
+        if(!isGrounded){
             if(IsCrouching){
                 newLinearVelocity = new Vector3(newLinearVelocity.x, newLinearVelocity.y - crouchGravityBoost, newLinearVelocity.z);
             }

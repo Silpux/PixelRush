@@ -10,6 +10,9 @@ public class UIManager : Singleton<UIManager>{
     public event Action OnPaused;
     public event Action OnContinue;
 
+    public event Action<MoveDirection> OnMoveStart;
+    public event Action<MoveDirection> OnMoveCancel;
+
     [SerializeField] private GameObject startPanel;
     [SerializeField] private GameObject lostPanel;
     [SerializeField] private GameObject winPanel;
@@ -18,10 +21,13 @@ public class UIManager : Singleton<UIManager>{
     [SerializeField] private TextMeshProUGUI collectedCoinsText;
     [SerializeField] private TextMeshProUGUI collectedCoinsWinPanelText;
     [SerializeField] private TextMeshProUGUI collectedCoinsLosePanelText;
-    
+
+    [SerializeField] private SwipeEventTrigger swipeEventTrigger;
 
     private void OnEnable(){
         StartCoroutine(ONEnable());
+        swipeEventTrigger.OnSwipeUp += MakeJump;
+        swipeEventTrigger.OnSwipeDown += MakeCrouch;
     }
 
     private IEnumerator ONEnable(){
@@ -42,6 +48,8 @@ public class UIManager : Singleton<UIManager>{
         GameInput.Instance.OnCancel -= Cancel;
         GameStateManager.Instance.OnGameStateChanged -= ChangeState;
         CollectibleManager.Instance.OnCoinsCountUpdate -= SetCollectedCoinsText;
+        swipeEventTrigger.OnSwipeUp -= MakeJump;
+        swipeEventTrigger.OnSwipeDown -= MakeCrouch;
     }
 
     private void ChangeState(GameState gameState){
@@ -56,6 +64,29 @@ public class UIManager : Singleton<UIManager>{
                 pausePanel.gameObject.SetActive(true);
                 break;
         }
+    }
+
+    public void MakeJump(){
+        OnMoveStart?.Invoke(MoveDirection.Up);
+    }
+
+    public void MakeCrouch(){
+        OnMoveStart?.Invoke(MoveDirection.Down);
+    }
+
+    public void MoveRightClick(){
+        OnMoveStart?.Invoke(MoveDirection.Right);
+    }
+
+    public void MoveLeftClick(){
+        OnMoveStart?.Invoke(MoveDirection.Left);
+    }
+    public void MoveRightRelease(){
+        OnMoveCancel?.Invoke(MoveDirection.Right);
+    }
+
+    public void MoveLeftRelease(){
+        OnMoveCancel?.Invoke(MoveDirection.Left);
     }
 
     private void SetCollectedCoinsText(int collected, int total){
