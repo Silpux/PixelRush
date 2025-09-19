@@ -90,7 +90,7 @@ public class UIManager : Singleton<UIManager>{
     }
 
     private void SetCollectedCoinsText(int collected, int total){
-        collectedCoinsText.text = $"{collected} / {total}";
+        collectedCoinsText.text = $"{collected}";
     }
 
     private IEnumerator ShowLostPanel(){
