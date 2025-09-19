@@ -97,11 +97,12 @@ public class Player : MonoBehaviour{
         if(other.gameObject.TryGetComponent<KillZone>(out _)){
             Debug.Log("Death");
             OnLose?.Invoke();
+            isDead = true;
         }
     }
 
     private void SetGroundedState(bool newState){
-        if(isMoving){
+        if(isMoving && !isDead){
             if(isGrounded != newState){
                 if(newState){
                     OnLand?.Invoke();
@@ -112,7 +113,10 @@ public class Player : MonoBehaviour{
     }
 
     private void MoveStart(MoveDirection direction){
-        Debug.Log($"Player: Move {direction}");
+
+        if(isDead){
+            return;
+        }
 
         switch(direction){
             case MoveDirection.Left:
@@ -134,7 +138,11 @@ public class Player : MonoBehaviour{
     }
 
     private void MoveCancel(MoveDirection direction){
-        Debug.LogWarning($"Move cancel: {direction}");
+
+        if(isDead){
+            return;
+        }
+
         switch(direction){
             case MoveDirection.Left:
                 strafingLeft = false;
@@ -158,6 +166,11 @@ public class Player : MonoBehaviour{
     }
 
     private void FixedUpdate(){
+
+        if(isDead){
+            rb.linearVelocity = new Vector3(0,rb.linearVelocity.y,0);
+            return;
+        }
 
         if(!isMoving){
             rb.linearVelocity = Vector3.zero;
