@@ -38,7 +38,7 @@ public class Player : MonoBehaviour{
 
     private Coroutine currentCrouchRoutine;
 
-    private float crouchGravityBoost = 1f;
+    private float crouchGravityBoost = 3f;
 
     private bool isGrounded;
 
@@ -128,19 +128,40 @@ public class Player : MonoBehaviour{
         currentCrouchRoutine = null;
     }
 
-    private void Update(){
+    private void FixedUpdate(){
+
+        Vector3 newLinearVelocity = rb.linearVelocity;
+
         if(strafingLeft){
-            rb.linearVelocity = new Vector3(-strafeSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
+            newLinearVelocity = new Vector3(-strafeSpeed, newLinearVelocity.y, newLinearVelocity.z);
         }
         if(strafingRight){
-            rb.linearVelocity = new Vector3(strafeSpeed, rb.linearVelocity.y, rb.linearVelocity.z);
-        }
-        if(isJumping && isGrounded){
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce, rb.linearVelocity.z);
-            OnJump?.Invoke();
+            newLinearVelocity = new Vector3(strafeSpeed, newLinearVelocity.y, newLinearVelocity.z);
         }
 
-        transform.position += new Vector3(0,0, runningSpeed * Time.deltaTime);
+        if(isGrounded){
+            if(isJumping){
+                newLinearVelocity = new Vector3(newLinearVelocity.x, jumpForce, newLinearVelocity.z);
+                if(IsCrouching){
+                    IsCrouching = false;
+                    if(currentCrouchRoutine != null){
+                        StopCoroutine(currentCrouchRoutine);
+                    }
+                    currentCrouchRoutine = null;
+
+                }
+                OnJump?.Invoke();
+            }
+        }
+        else{
+            if(IsCrouching){
+                newLinearVelocity = new Vector3(newLinearVelocity.x, newLinearVelocity.y - crouchGravityBoost, newLinearVelocity.z);
+            }
+        }
+
+        newLinearVelocity = new Vector3(newLinearVelocity.x, newLinearVelocity.y, runningSpeed);
+
+        rb.linearVelocity = newLinearVelocity;
 
     }
 

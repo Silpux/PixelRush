@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1045282871455377115, guid: eb525d13a64f246449831ce8b6198a33, type: 3}
+      propertyPath: crouchDuration
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 57598945687629381, guid: eb525d13a64f246449831ce8b6198a33, type: 3}
       propertyPath: m_Name
       value: Player
