@@ -1,8 +1,7 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameStateManager : Singleton<GameStateManager>{
 
@@ -21,6 +20,11 @@ public class GameStateManager : Singleton<GameStateManager>{
 
     public event Action<GameState> OnGameStateChanged;
 
+    protected override void Awake(){
+        base.Awake();
+        CurrentState = GameState.WaitingForStart;
+    }
+
     private void OnEnable(){
         StartCoroutine(ONEnable());
         player.OnLose += Lose;
@@ -30,32 +34,37 @@ public class GameStateManager : Singleton<GameStateManager>{
         while(UIManager.Instance == null){
             yield return null;
         }
+        UIManager.Instance.OnStart += StartRun;
         UIManager.Instance.OnRestart += Restart;
         UIManager.Instance.OnPaused += Pause;
         UIManager.Instance.OnContinue += Continue;
     }
 
     private void OnDisable(){
+        UIManager.Instance.OnStart -= StartRun;
         UIManager.Instance.OnRestart -= Restart;
         UIManager.Instance.OnPaused -= Pause;
         UIManager.Instance.OnContinue -= Continue;
         player.OnLose -= Lose;
     }
 
+    private void StartRun(){
+        CurrentState = GameState.Running;
+    }
     private void Lose(){
         UnityEngine.Debug.Log("GameStateManager: Lose");
     }
 
     private void Restart(){
-        UnityEngine.Debug.Log("GameStateManager: Restart");
+        SceneManager.LoadScene(0);
     }
 
     private void Pause(){
-        UnityEngine.Debug.Log("GameStateManager: Pause");
+        Time.timeScale = 0f;
     }
 
     private void Continue(){
-        UnityEngine.Debug.Log("GameStateManager: Continue");
+        Time.timeScale = 1f;
     }
 
 

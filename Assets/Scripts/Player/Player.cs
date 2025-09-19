@@ -16,6 +16,9 @@ public class Player : MonoBehaviour{
     [SerializeField] private BoxCollider headBoxCollider;
 
     private Rigidbody rb;
+
+    private bool isMoving = false;
+    private bool isDead = false;
     
     private bool strafingRight = false;
     private bool strafingLeft = false;
@@ -56,6 +59,7 @@ public class Player : MonoBehaviour{
 
     private void Awake(){
         rb = GetComponent<Rigidbody>();
+        OnIdle?.Invoke();
     }
 
     private void OnEnable(){
@@ -69,12 +73,24 @@ public class Player : MonoBehaviour{
         }
         GameInput.Instance.OnMoveStart += MoveStart;
         GameInput.Instance.OnMoveCancel += MoveCancel;
+        while(GameStateManager.Instance == null){
+            yield return null;
+        }
+        GameStateManager.Instance.OnGameStateChanged += ChangeState;
+
     }
 
     private void OnDisable(){
         groundedZone.OnGroundStateChanged -= SetGroundedState;
         GameInput.Instance.OnMoveStart -= MoveStart;
         GameInput.Instance.OnMoveCancel -= MoveCancel;
+    }
+
+    private void ChangeState(GameState state){
+        if(state == GameState.Running){
+            isMoving = true;
+            OnRun?.Invoke();
+        }
     }
 
     private void OnTriggerEnter(Collider other){
@@ -85,12 +101,14 @@ public class Player : MonoBehaviour{
     }
 
     private void SetGroundedState(bool newState){
-        if(isGrounded != newState){
-            isGrounded = newState;
-            if(newState){
-                OnLand?.Invoke();
+        if(isMoving){
+            if(isGrounded != newState){
+                if(newState){
+                    OnLand?.Invoke();
+                }
             }
         }
+        isGrounded = newState;
     }
 
     private void MoveStart(MoveDirection direction){
@@ -140,6 +158,11 @@ public class Player : MonoBehaviour{
     }
 
     private void FixedUpdate(){
+
+        if(!isMoving){
+            rb.linearVelocity = Vector3.zero;
+            return;
+        }
 
         Vector3 newLinearVelocity = rb.linearVelocity;
 
