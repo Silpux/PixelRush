@@ -13,6 +13,8 @@ public class Player : MonoBehaviour{
 
     [SerializeField] private float strafeSpeed = 5f;
 
+    [SerializeField] private BoxCollider headBoxCollider;
+
     private Rigidbody rb;
     
     private bool strafingRight = false;
@@ -27,9 +29,11 @@ public class Player : MonoBehaviour{
                 isCrouching = value;
  
                 if(isCrouching){
+                    headBoxCollider.enabled = false;
                     OnCrouch?.Invoke();
                 }
                 else{
+                    headBoxCollider.enabled = true;
                     OnRun?.Invoke();
                 }
             }
@@ -71,6 +75,13 @@ public class Player : MonoBehaviour{
         groundedZone.OnGroundStateChanged -= SetGroundedState;
         GameInput.Instance.OnMoveStart -= MoveStart;
         GameInput.Instance.OnMoveCancel -= MoveCancel;
+    }
+
+    private void OnTriggerEnter(Collider other){
+        if(other.gameObject.TryGetComponent<KillZone>(out _)){
+            Debug.Log("Death");
+            OnLose?.Invoke();
+        }
     }
 
     private void SetGroundedState(bool newState){

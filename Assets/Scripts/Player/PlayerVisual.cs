@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerVisual : MonoBehaviour{
 
     private const string DEATH_TRIGGER = "DeathTrigger";
+    private const string DEATH_ANIMATION = "Death";
     private const string RUN_TRIGGER = "RunTrigger";
     private const string CROUCH_TRIGGER = "CrouchTrigger";
     private const string IDLE_TRIGGER = "IdleTrigger";
@@ -37,7 +38,7 @@ public class PlayerVisual : MonoBehaviour{
     }
 
     private void PlayLose(){
-        animator.SetTrigger(DEATH_TRIGGER);
+        animator.Play(DEATH_ANIMATION);
     }
     private void PlayCrouch(){
         animator.ResetTrigger(RUN_TRIGGER);
