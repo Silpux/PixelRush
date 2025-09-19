@@ -1,19 +1,13 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class UIManager : Singleton<UIManager>{
+public class UIManager : MonoBehaviour{
 
-    public event Action OnStart;
-    public event Action OnRestart;
-    public event Action OnPaused;
-    public event Action OnContinue;
-
-    // GameInput will listen to it and raise it's events,
-    // because these are raised after pressing buttons or swiping
-    public event Action<MoveDirection> OnMoveStart;
-    public event Action<MoveDirection> OnMoveCancel;
+    [SerializeField] private GameInputSO gameInputSO;
+    [SerializeField] private GameStateSO gameStateSO;
+    [SerializeField] private GameUISO gameUISO;
+    [SerializeField] private GameCoinsSO gameCoinsSO;
 
     [SerializeField] private GameObject startPanel;
     [SerializeField] private GameObject lostPanel;
@@ -27,30 +21,17 @@ public class UIManager : Singleton<UIManager>{
     [SerializeField] private SwipeEventTrigger swipeEventTrigger;
 
     private void OnEnable(){
-        // because other singleton's Awake may not be called yet
-        StartCoroutine(ONEnable());
         swipeEventTrigger.OnSwipeUp += MakeJump;
         swipeEventTrigger.OnSwipeDown += MakeCrouch;
+        gameInputSO.OnCancel += Cancel;
+        gameStateSO.OnGameStateChanged += ChangeState;
+        gameCoinsSO.OnCoinsCountUpdate += SetCollectedCoinsText;
     }
 
-    private IEnumerator ONEnable(){
-        while(GameInput.Instance == null){
-            yield return null;
-        }
-        GameInput.Instance.OnCancel += Cancel;
-        while(GameStateManager.Instance == null){
-            yield return null;
-        }
-        GameStateManager.Instance.OnGameStateChanged += ChangeState;
-        while(CollectibleManager.Instance == null){
-            yield return null;
-        }
-        CollectibleManager.Instance.OnCoinsCountUpdate += SetCollectedCoinsText;
-    }
     private void OnDisable(){
-        GameInput.Instance.OnCancel -= Cancel;
-        GameStateManager.Instance.OnGameStateChanged -= ChangeState;
-        CollectibleManager.Instance.OnCoinsCountUpdate -= SetCollectedCoinsText;
+        gameInputSO.OnCancel -= Cancel;
+        gameStateSO.OnGameStateChanged -= ChangeState;
+        gameCoinsSO.OnCoinsCountUpdate -= SetCollectedCoinsText;
         swipeEventTrigger.OnSwipeUp -= MakeJump;
         swipeEventTrigger.OnSwipeDown -= MakeCrouch;
     }
@@ -70,26 +51,27 @@ public class UIManager : Singleton<UIManager>{
     }
 
     public void MakeJump(){
-        OnMoveStart?.Invoke(MoveDirection.Up);
+        gameInputSO.InvokeMoveStart(MoveDirection.Up);
     }
 
     public void MakeCrouch(){
-        OnMoveStart?.Invoke(MoveDirection.Down);
+        gameInputSO.InvokeMoveStart(MoveDirection.Down);
     }
 
     public void MoveRightClick(){
-        OnMoveStart?.Invoke(MoveDirection.Right);
+        gameInputSO.InvokeMoveStart(MoveDirection.Right);
     }
 
     public void MoveLeftClick(){
-        OnMoveStart?.Invoke(MoveDirection.Left);
+        gameInputSO.InvokeMoveStart(MoveDirection.Left);
     }
+
     public void MoveRightRelease(){
-        OnMoveCancel?.Invoke(MoveDirection.Right);
+        gameInputSO.InvokeMoveCancel(MoveDirection.Right);
     }
 
     public void MoveLeftRelease(){
-        OnMoveCancel?.Invoke(MoveDirection.Left);
+        gameInputSO.InvokeMoveCancel(MoveDirection.Left);
     }
 
     private void SetCollectedCoinsText(int collected, int total){
@@ -98,31 +80,31 @@ public class UIManager : Singleton<UIManager>{
 
     private IEnumerator ShowLostPanel(){
         yield return new WaitForSeconds(2f);
-        collectedCoinsLosePanelText.text = $"Coins collected:\n{CollectibleManager.Instance.CollectedCoinsCount} / {CollectibleManager.Instance.TotalCoins}";
+        collectedCoinsLosePanelText.text = $"Coins collected:\n{gameCoinsSO.CollectedCoinsCount} / {gameCoinsSO.TotalCoins}";
         lostPanel.gameObject.SetActive(true);
     }
     private IEnumerator ShowWinPanel(){
         yield return new WaitForSeconds(2f);
-        collectedCoinsWinPanelText.text = $"Coins collected:\n{CollectibleManager.Instance.CollectedCoinsCount} / {CollectibleManager.Instance.TotalCoins}";
+        collectedCoinsWinPanelText.text = $"Coins collected:\n{gameCoinsSO.CollectedCoinsCount} / {gameCoinsSO.TotalCoins}";
         winPanel.gameObject.SetActive(true);
     }
 
     public void OnPressStart(){
         startPanel.gameObject.SetActive(false);
-        OnStart?.Invoke();
+        gameUISO.InvokeStart();
     }
 
     public void Restart(){
-        OnRestart?.Invoke();
+        gameUISO.InvokeRestart();
     }
 
     public void Pause(){
-        OnPaused?.Invoke();
+        gameUISO.InvokePaused();
         pausePanel.gameObject.SetActive(true);
     }
 
     public void Continue(){
-        OnContinue?.Invoke();
+        gameUISO.InvokeContinue();
         pausePanel.gameObject.SetActive(false);
     }
 

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public enum MoveDirection{
     None = 0,
     Up,

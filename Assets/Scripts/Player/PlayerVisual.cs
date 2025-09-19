@@ -1,8 +1,6 @@
 using UnityEngine;
 
 public class PlayerVisual : MonoBehaviour{
-
-    private const string DEATH_TRIGGER = "DeathTrigger";
     private const string DEATH_ANIMATION = "Death";
     private const string RUN_TRIGGER = "RunTrigger";
     private const string CROUCH_TRIGGER = "CrouchTrigger";

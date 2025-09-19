@@ -1,79 +1,42 @@
-using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameInput : Singleton<GameInput>{
+public class GameInput : MonoBehaviour{
 
-    private static InputSystem_Actions actions;
-    public static InputSystem_Actions Actions => actions ??= new();
+    private InputSystem_Actions actions;
+    private InputSystem_Actions Actions => actions ??= new();
 
-    public event Action<MoveDirection> OnMoveStart;
-    public event Action<MoveDirection> OnMoveCancel;
-    public event Action OnCancel;
+    [SerializeField] private GameInputSO gameInputSO;
 
-    protected override void Awake(){
-        base.Awake();
+    private void Awake(){
         EnablePlayerMap();
     }
 
     private void OnEnable(){
-        Actions.Player.StrafeLeft.performed += RaiseStrafeLeft;
-        Actions.Player.StrafeRight.performed += RaiseStrafeRight;
-        Actions.Player.Jump.performed += RaiseJump;
-        Actions.Player.Crouch.performed += RaiseCrouch;
-        Actions.Player.StrafeLeft.canceled += RaiseStrafeLeft;
-        Actions.Player.StrafeRight.canceled += RaiseStrafeRight;
-        Actions.Player.Jump.canceled += RaiseJump;
-        Actions.Player.Crouch.canceled += RaiseCrouch;
-
-        Actions.Player.Cancel.performed += RaiseCancelEvent;
-        Actions.UI.Cancel.performed += RaiseCancelEvent;
-        // because other singleton's Awake may not be called yet
-        StartCoroutine(ONEnable());
-    }
-
-    private IEnumerator ONEnable(){
-        while(GameStateManager.Instance == null){
-            yield return null;
-        }
-        GameStateManager.Instance.OnGameStateChanged += ChangeState;
-        while(UIManager.Instance == null){
-            yield return null;
-        }
-        UIManager.Instance.OnMoveStart += UIMoveStart;
-        UIManager.Instance.OnMoveCancel += UIMoveCancel;
+        Actions.Player.StrafeLeft.performed += InvokeStrafeLeft;
+        Actions.Player.StrafeRight.performed += InvokeStrafeRight;
+        Actions.Player.Jump.performed += InvokeJump;
+        Actions.Player.Crouch.performed += InvokeCrouch;
+        Actions.Player.StrafeLeft.canceled += InvokeStrafeLeft;
+        Actions.Player.StrafeRight.canceled += InvokeStrafeRight;
+        Actions.Player.Jump.canceled += InvokeJump;
+        Actions.Player.Crouch.canceled += InvokeCrouch;
+        Actions.Player.Cancel.performed += InvokeCancelEvent;
+        Actions.UI.Cancel.performed += InvokeCancelEvent;
     }
 
     private void OnDisable(){
-        Actions.Player.StrafeLeft.performed -= RaiseStrafeLeft;
-        Actions.Player.StrafeRight.performed -= RaiseStrafeRight;
-        Actions.Player.Jump.performed -= RaiseJump;
-        Actions.Player.Crouch.performed -= RaiseCrouch;
-        Actions.Player.StrafeLeft.canceled -= RaiseStrafeLeft;
-        Actions.Player.StrafeRight.canceled -= RaiseStrafeRight;
-        Actions.Player.Jump.canceled -= RaiseJump;
-        Actions.Player.Crouch.canceled -= RaiseCrouch;
-
-        Actions.Player.Cancel.performed -= RaiseCancelEvent;
-        Actions.UI.Cancel.performed -= RaiseCancelEvent;
-
-        GameStateManager.Instance.OnGameStateChanged -= ChangeState;
-        UIManager.Instance.OnMoveCancel -= UIMoveCancel;
-
-    }
-
-    private void UIMoveStart(MoveDirection direction){
-        OnMoveStart?.Invoke(direction);
-    }
-
-    private void UIMoveCancel(MoveDirection direction){
-        OnMoveCancel?.Invoke(direction);
-    }
-
-    private void ChangeState(GameState state){
-        Debug.Log($"GameInput: Change state: {state}");
+        Actions.Player.StrafeLeft.performed -= InvokeStrafeLeft;
+        Actions.Player.StrafeRight.performed -= InvokeStrafeRight;
+        Actions.Player.Jump.performed -= InvokeJump;
+        Actions.Player.Crouch.performed -= InvokeCrouch;
+        Actions.Player.StrafeLeft.canceled -= InvokeStrafeLeft;
+        Actions.Player.StrafeRight.canceled -= InvokeStrafeRight;
+        Actions.Player.Jump.canceled -= InvokeJump;
+        Actions.Player.Crouch.canceled -= InvokeCrouch;
+        Actions.Player.Cancel.performed -= InvokeCancelEvent;
+        Actions.UI.Cancel.performed -= InvokeCancelEvent;
+        DisableActions();
     }
 
     public void EnablePlayerMap(){
@@ -86,43 +49,48 @@ public class GameInput : Singleton<GameInput>{
         Actions.UI.Enable();
     }
 
-    private void RaiseCancelEvent(InputAction.CallbackContext ctx){
-        OnCancel?.Invoke();
+    private void DisableActions(){
+        Actions.Player.Disable();
+        Actions.UI.Disable();
     }
 
-    private void RaiseJump(InputAction.CallbackContext ctx){
-        if(ctx.phase == InputActionPhase.Performed){
-            OnMoveStart?.Invoke(MoveDirection.Up);
-        }
-        else{
-            OnMoveCancel?.Invoke(MoveDirection.Up);
-        }
+    private void InvokeCancelEvent(InputAction.CallbackContext ctx){
+        gameInputSO.InvokeCancel();
     }
 
-    private void RaiseCrouch(InputAction.CallbackContext ctx){
+    private void InvokeJump(InputAction.CallbackContext ctx){
         if(ctx.phase == InputActionPhase.Performed){
-            OnMoveStart?.Invoke(MoveDirection.Down);
+            gameInputSO.InvokeMoveStart(MoveDirection.Up);
         }
         else{
-            OnMoveCancel?.Invoke(MoveDirection.Down);
+            gameInputSO.InvokeMoveCancel(MoveDirection.Up);
         }
     }
 
-    private void RaiseStrafeRight(InputAction.CallbackContext ctx){
+    private void InvokeCrouch(InputAction.CallbackContext ctx){
         if(ctx.phase == InputActionPhase.Performed){
-            OnMoveStart?.Invoke(MoveDirection.Right);
+            gameInputSO.InvokeMoveStart(MoveDirection.Down);
         }
         else{
-            OnMoveCancel?.Invoke(MoveDirection.Right);
+            gameInputSO.InvokeMoveCancel(MoveDirection.Down);
         }
     }
 
-    private void RaiseStrafeLeft(InputAction.CallbackContext ctx){
+    private void InvokeStrafeRight(InputAction.CallbackContext ctx){
         if(ctx.phase == InputActionPhase.Performed){
-            OnMoveStart?.Invoke(MoveDirection.Left);
+            gameInputSO.InvokeMoveStart(MoveDirection.Right);
         }
         else{
-            OnMoveCancel?.Invoke(MoveDirection.Left);
+            gameInputSO.InvokeMoveCancel(MoveDirection.Right);
+        }
+    }
+
+    private void InvokeStrafeLeft(InputAction.CallbackContext ctx){
+        if(ctx.phase == InputActionPhase.Performed){
+            gameInputSO.InvokeMoveStart(MoveDirection.Left);
+        }
+        else{
+            gameInputSO.InvokeMoveCancel(MoveDirection.Left);
         }
     }
 }

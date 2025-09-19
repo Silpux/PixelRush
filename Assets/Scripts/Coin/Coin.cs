@@ -1,15 +1,15 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class Coin : MonoBehaviour{
 
     public event Action OnCollect;
 
+    [SerializeField] private GameCoinsSO gameCoinsSO;
     [SerializeField] private GameObject collectParticles;
 
     private void Start(){
-        CollectibleManager.Instance.RegisterCoin(this);
+        gameCoinsSO.RegisterCoin(this);
     }
 
     private void OnTriggerEnter(Collider other){
@@ -17,7 +17,7 @@ public class Coin : MonoBehaviour{
         if(other.TryGetComponent(out Player player)){
 
             OnCollect?.Invoke();
-            CollectibleManager.Instance.CollectCoin(this);
+            gameCoinsSO.CollectCoin(this);
             Destroy(Instantiate(collectParticles, transform.position, Quaternion.identity), 1f);
 
         }

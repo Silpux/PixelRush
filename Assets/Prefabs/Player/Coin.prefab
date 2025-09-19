@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad5a228f2c20a84d8ad172ec387124d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Coin
+  gameCoinsSO: {fileID: 11400000, guid: 63c1b6f55eba6484d8c15749355de13c, type: 2}
   collectParticles: {fileID: 409871949563206857, guid: ca3ddd486f1d1a34cb19caa9d3dd1051, type: 3}
 --- !u!1 &6906159773008753280
 GameObject:

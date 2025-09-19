@@ -5,18 +5,20 @@ using UnityEngine;
 public class Player : MonoBehaviour{
 
     [SerializeField] private PlayerGroundedZone groundedZone;
-
-    [SerializeField] private float jumpForce = 8f;
-    private float runningSpeed = 10f;
-
-    [SerializeField] private float crouchDuration = 0.5f;
-
-    [SerializeField] private float strafeSpeed = 5f;
-
+    [SerializeField] private GameInputSO inputEvent;
+    [SerializeField] private GameStateSO gameStateSO;
     [SerializeField] private BoxCollider headBoxCollider;
 
-    private Rigidbody rb;
+    [SerializeField] private float jumpForce = 8f;
+    [SerializeField] private float runningSpeed = 10f;
+    [SerializeField] private float crouchDuration = 0.5f;
+    [SerializeField] private float strafeSpeed = 5f;
+    [SerializeField] private float crouchGravityBoost = 3f;
 
+    private Rigidbody rb;
+    private Coroutine currentCrouchRoutine;
+
+    private bool isGrounded;
     private bool isMoving = false;
     private bool isDead = false;
     
@@ -42,12 +44,6 @@ public class Player : MonoBehaviour{
         }
     }
 
-    private Coroutine currentCrouchRoutine;
-
-    private float crouchGravityBoost = 3f;
-
-    private bool isGrounded;
-
     public event Action OnIdle;
     public event Action OnRun;
     public event Action OnJump;
@@ -64,27 +60,17 @@ public class Player : MonoBehaviour{
 
     private void OnEnable(){
         groundedZone.OnGroundStateChanged += SetGroundedState;
-        // because other singleton's Awake may not be called yet
-        StartCoroutine(ONEnable());
-    }
-
-    private IEnumerator ONEnable(){
-        while(GameInput.Instance == null){
-            yield return null;
-        }
-        GameInput.Instance.OnMoveStart += MoveStart;
-        GameInput.Instance.OnMoveCancel += MoveCancel;
-        while(GameStateManager.Instance == null){
-            yield return null;
-        }
-        GameStateManager.Instance.OnGameStateChanged += ChangeState;
+        inputEvent.OnMoveStart += MoveStart;
+        inputEvent.OnMoveCancel += MoveCancel;
+        gameStateSO.OnGameStateChanged += ChangeState;
 
     }
 
     private void OnDisable(){
         groundedZone.OnGroundStateChanged -= SetGroundedState;
-        GameInput.Instance.OnMoveStart -= MoveStart;
-        GameInput.Instance.OnMoveCancel -= MoveCancel;
+        inputEvent.OnMoveStart -= MoveStart;
+        inputEvent.OnMoveCancel -= MoveCancel;
+        gameStateSO.OnGameStateChanged -= ChangeState;
     }
 
     private void ChangeState(GameState state){

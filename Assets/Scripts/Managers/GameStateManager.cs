@@ -1,12 +1,11 @@
-using System;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameStateManager : Singleton<GameStateManager>{
+public class GameStateManager : MonoBehaviour{
 
     [SerializeField] private Player player;
+    [SerializeField] private GameStateSO gameStateSO;
+    [SerializeField] private GameUISO gameUISO;
 
     private GameState currentState;
     private GameState CurrentState{
@@ -14,40 +13,29 @@ public class GameStateManager : Singleton<GameStateManager>{
         set{
             if(currentState != value){
                 currentState = value;
-                OnGameStateChanged?.Invoke(currentState);
+                gameStateSO.InvokeGameStateChange(currentState);
             }
         }
     }
 
-    public event Action<GameState> OnGameStateChanged;
-
-    protected override void Awake(){
-        base.Awake();
+    private void Awake(){
         CurrentState = GameState.WaitingForStart;
     }
 
     private void OnEnable(){
-        // because other singleton's Awake may not be called yet
-        StartCoroutine(ONEnable());
+        gameUISO.OnStart += StartRun;
+        gameUISO.OnRestart += Restart;
+        gameUISO.OnPaused += Pause;
+        gameUISO.OnContinue += Continue;
         player.OnLose += Lose;
         player.OnFinish += Finish;
     }
 
-    private IEnumerator ONEnable(){
-        while(UIManager.Instance == null){
-            yield return null;
-        }
-        UIManager.Instance.OnStart += StartRun;
-        UIManager.Instance.OnRestart += Restart;
-        UIManager.Instance.OnPaused += Pause;
-        UIManager.Instance.OnContinue += Continue;
-    }
-
     private void OnDisable(){
-        UIManager.Instance.OnStart -= StartRun;
-        UIManager.Instance.OnRestart -= Restart;
-        UIManager.Instance.OnPaused -= Pause;
-        UIManager.Instance.OnContinue -= Continue;
+        gameUISO.OnStart -= StartRun;
+        gameUISO.OnRestart -= Restart;
+        gameUISO.OnPaused -= Pause;
+        gameUISO.OnContinue -= Continue;
         player.OnLose -= Lose;
         player.OnFinish -= Finish;
     }
