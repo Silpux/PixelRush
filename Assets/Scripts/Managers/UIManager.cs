@@ -95,12 +95,12 @@ public class UIManager : Singleton<UIManager>{
 
     private IEnumerator ShowLostPanel(){
         yield return new WaitForSeconds(2f);
-        collectedCoinsLosePanelText.text = $"Coins collected: {CollectibleManager.Instance.CollectedCoinsCount} / {CollectibleManager.Instance.TotalCoins}";
+        collectedCoinsLosePanelText.text = $"Coins collected:\n{CollectibleManager.Instance.CollectedCoinsCount} / {CollectibleManager.Instance.TotalCoins}";
         lostPanel.gameObject.SetActive(true);
     }
     private IEnumerator ShowWinPanel(){
         yield return new WaitForSeconds(2f);
-        collectedCoinsWinPanelText.text = $"Coins collected: {CollectibleManager.Instance.CollectedCoinsCount} / {CollectibleManager.Instance.TotalCoins}";
+        collectedCoinsWinPanelText.text = $"Coins collected:\n{CollectibleManager.Instance.CollectedCoinsCount} / {CollectibleManager.Instance.TotalCoins}";
         winPanel.gameObject.SetActive(true);
     }
 
