@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 496583519626663707}
   - component: {fileID: 6872547819686274939}
   - component: {fileID: -1045282871455377115}
-  - component: {fileID: 8582240095489445832}
   - component: {fileID: 3058556072333655163}
+  - component: {fileID: 8733534500146415121}
   m_Layer: 5
   m_Name: Player
   m_TagString: Untagged
@@ -81,27 +81,6 @@ MonoBehaviour:
   crouchDuration: 0.5
   strafeSpeed: 5
   headBoxCollider: {fileID: 3058556072333655163}
---- !u!65 &8582240095489445832
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57598945687629381}
-  m_Material: {fileID: 13400000, guid: 9f791a0ecfede374294147025ffee6b9, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.5890205, y: 1.8435299, z: 0.25408426}
-  m_Center: {x: 0, y: -0.73375547, z: 0}
 --- !u!65 &3058556072333655163
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -123,6 +102,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.71899, y: 1.156568, z: 0.28059107}
   m_Center: {x: 0, y: 1.0053029, z: 0}
+--- !u!136 &8733534500146415121
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57598945687629381}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.4859876
+  m_Height: 1.6868062
+  m_Direction: 1
+  m_Center: {x: 0, y: -0.63111925, z: 0}
 --- !u!1 &738861519855725959
 GameObject:
   m_ObjectHideFlags: 0
