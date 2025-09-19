@@ -1396,8 +1396,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 212.27008, y: -92.063965}
-  m_SizeDelta: {x: 374.5401, y: 135}
+  m_AnchoredPosition: {x: 280.79898, y: -92.063965}
+  m_SizeDelta: {x: 511.5978, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &187666875
 MonoBehaviour:
@@ -4092,8 +4092,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 253.9, y: 0}
-  m_SizeDelta: {x: 141.8251, y: 75.209}
+  m_AnchoredPosition: {x: 310.4267, y: 0}
+  m_SizeDelta: {x: 333.8608, y: 75.209}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &654560807
 MonoBehaviour:
@@ -4115,7 +4115,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0
+  m_text: 0 / 20
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4149,7 +4149,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -10985,6 +10985,9 @@ MonoBehaviour:
   lostPanel: {fileID: 679690954}
   winPanel: {fileID: 1441734912}
   pausePanel: {fileID: 1346552416}
+  collectedCoinsText: {fileID: 654560807}
+  collectedCoinsWinPanelText: {fileID: 1026948126}
+  collectedCoinsLosePanelText: {fileID: 1027382356}
 --- !u!1 &1668566227
 GameObject:
   m_ObjectHideFlags: 0
