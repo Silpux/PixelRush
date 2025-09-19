@@ -10,6 +10,9 @@ public class UIManager : Singleton<UIManager>{
     public event Action OnContinue;
 
     [SerializeField] private GameObject startPanel;
+    [SerializeField] private GameObject lostPanel;
+    [SerializeField] private GameObject winPanel;
+    [SerializeField] private GameObject pausePanel;
 
     private void OnEnable(){
         StartCoroutine(ONEnable());
@@ -20,6 +23,34 @@ public class UIManager : Singleton<UIManager>{
             yield return null;
         }
         GameInput.Instance.OnCancel += Cancel;
+        while(GameStateManager.Instance == null){
+            yield return null;
+        }
+        GameStateManager.Instance.OnGameStateChanged += ChangeState;
+    }
+
+    private void ChangeState(GameState gameState){
+        switch(gameState){
+            case GameState.Lost:
+                StartCoroutine(ShowLostPanel());
+                break;
+            case GameState.Finished:
+                StartCoroutine(ShowWinPanel());
+                break;
+            case GameState.Paused:
+                pausePanel.gameObject.SetActive(true);
+                break;
+            
+        }
+    }
+
+    private IEnumerator ShowLostPanel(){
+        yield return new WaitForSeconds(2f);
+        lostPanel.gameObject.SetActive(true);
+    }
+    private IEnumerator ShowWinPanel(){
+        yield return new WaitForSeconds(2f);
+        winPanel.gameObject.SetActive(true);
     }
 
     private void OnDisable(){
@@ -37,10 +68,16 @@ public class UIManager : Singleton<UIManager>{
 
     public void Pause(){
         OnPaused?.Invoke();
+        pausePanel.gameObject.SetActive(true);
     }
 
     public void Continue(){
         OnContinue?.Invoke();
+        pausePanel.gameObject.SetActive(false);
+    }
+
+    public void Quit(){
+        Application.Quit();
     }
 
     private void Cancel(){

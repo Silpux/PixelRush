@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -52,7 +53,11 @@ public class GameStateManager : Singleton<GameStateManager>{
         CurrentState = GameState.Running;
     }
     private void Lose(){
-        UnityEngine.Debug.Log("GameStateManager: Lose");
+        CurrentState = GameState.Lost;
+    }
+
+    private void Finish(){
+        CurrentState = GameState.Finished;
     }
 
     private void Restart(){
