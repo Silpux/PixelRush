@@ -28,7 +28,7 @@ public class Player : MonoBehaviour{
     private bool IsCrouching{
         get => isCrouching;
         set{
-            if(isCrouching != value){
+            if(isCrouching != value && isMoving){
                 isCrouching = value;
  
                 if(isCrouching){
@@ -55,6 +55,7 @@ public class Player : MonoBehaviour{
     public event Action OnLand;
     public event Action OnCrouch;
 
+    public event Action OnFinish;
     public event Action OnLose;
 
     private void Awake(){
@@ -95,9 +96,13 @@ public class Player : MonoBehaviour{
 
     private void OnTriggerEnter(Collider other){
         if(other.gameObject.TryGetComponent<KillZone>(out _)){
-            Debug.Log("Death");
             OnLose?.Invoke();
             isDead = true;
+        }
+        else if(other.gameObject.TryGetComponent<Finish>(out _)){
+            OnFinish?.Invoke();
+            OnIdle?.Invoke();
+            isMoving = false;
         }
     }
 
@@ -167,13 +172,8 @@ public class Player : MonoBehaviour{
 
     private void FixedUpdate(){
 
-        if(isDead){
+        if(isDead || !isMoving){
             rb.linearVelocity = new Vector3(0,rb.linearVelocity.y,0);
-            return;
-        }
-
-        if(!isMoving){
-            rb.linearVelocity = Vector3.zero;
             return;
         }
 

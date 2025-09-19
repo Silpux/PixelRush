@@ -40,7 +40,6 @@ public class UIManager : Singleton<UIManager>{
             case GameState.Paused:
                 pausePanel.gameObject.SetActive(true);
                 break;
-            
         }
     }
 

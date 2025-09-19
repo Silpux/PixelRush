@@ -29,6 +29,7 @@ public class GameStateManager : Singleton<GameStateManager>{
     private void OnEnable(){
         StartCoroutine(ONEnable());
         player.OnLose += Lose;
+        player.OnFinish += Finish;
     }
 
     private IEnumerator ONEnable(){
@@ -47,6 +48,7 @@ public class GameStateManager : Singleton<GameStateManager>{
         UIManager.Instance.OnPaused -= Pause;
         UIManager.Instance.OnContinue -= Continue;
         player.OnLose -= Lose;
+        player.OnFinish -= Finish;
     }
 
     private void StartRun(){
