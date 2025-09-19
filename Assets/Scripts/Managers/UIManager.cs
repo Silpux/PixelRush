@@ -10,6 +10,8 @@ public class UIManager : Singleton<UIManager>{
     public event Action OnPaused;
     public event Action OnContinue;
 
+    // GameInput will listen to it and raise it's events,
+    // because these are raised after pressing buttons or swiping
     public event Action<MoveDirection> OnMoveStart;
     public event Action<MoveDirection> OnMoveCancel;
 
@@ -25,6 +27,7 @@ public class UIManager : Singleton<UIManager>{
     [SerializeField] private SwipeEventTrigger swipeEventTrigger;
 
     private void OnEnable(){
+        // because other singleton's Awake may not be called yet
         StartCoroutine(ONEnable());
         swipeEventTrigger.OnSwipeUp += MakeJump;
         swipeEventTrigger.OnSwipeDown += MakeCrouch;
@@ -128,7 +131,6 @@ public class UIManager : Singleton<UIManager>{
     }
 
     private void Cancel(){
-        Debug.Log("UIManager: Cancel");
         Pause();
     }
 

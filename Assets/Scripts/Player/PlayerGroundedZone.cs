@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerGroundedZone : MonoBehaviour{
 
+    // count ground blocks instead of just track trigger enter or exit,
+    // because blocks of ground can intersect and it will lead to have flying state on ground
     private int groundCounter = 0;
 
     public event Action<bool> OnGroundStateChanged;

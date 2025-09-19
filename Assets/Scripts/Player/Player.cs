@@ -64,6 +64,7 @@ public class Player : MonoBehaviour{
 
     private void OnEnable(){
         groundedZone.OnGroundStateChanged += SetGroundedState;
+        // because other singleton's Awake may not be called yet
         StartCoroutine(ONEnable());
     }
 

@@ -27,6 +27,7 @@ public class GameStateManager : Singleton<GameStateManager>{
     }
 
     private void OnEnable(){
+        // because other singleton's Awake may not be called yet
         StartCoroutine(ONEnable());
         player.OnLose += Lose;
         player.OnFinish += Finish;

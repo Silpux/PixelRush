@@ -30,6 +30,7 @@ public class GameInput : Singleton<GameInput>{
 
         Actions.Player.Cancel.performed += RaiseCancelEvent;
         Actions.UI.Cancel.performed += RaiseCancelEvent;
+        // because other singleton's Awake may not be called yet
         StartCoroutine(ONEnable());
     }
 

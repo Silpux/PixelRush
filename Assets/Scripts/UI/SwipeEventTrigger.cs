@@ -12,7 +12,6 @@ public class SwipeEventTrigger : EventTrigger{
     public event Action OnSwipeDown;
 
     public override void OnBeginDrag(PointerEventData eventData){
-        Debug.Log("OnBeginDrag");
         startPos = eventData.position;
         isSwiping = true;
     }

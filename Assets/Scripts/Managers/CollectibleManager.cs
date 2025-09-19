@@ -13,6 +13,7 @@ public class CollectibleManager : Singleton<CollectibleManager>{
 
     public event Action<int, int> OnCoinsCountUpdate;
 
+    // each coin calls it and passes itself as parameter
     public void RegisterCoin(Coin coin){
         leftCoins.Add(coin);
     }
